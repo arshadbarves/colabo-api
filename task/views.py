@@ -5,6 +5,7 @@ from .models import Task
 from .serializers import TaskSerializer
 from .permissions import IsProjectCreatorOrCollaborator, IsTaskRelatedToProject
 
+
 class TaskViewSet(mixins.CreateModelMixin,
                   mixins.RetrieveModelMixin,
                   mixins.UpdateModelMixin,

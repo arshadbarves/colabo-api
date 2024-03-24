@@ -1,7 +1,5 @@
 from rest_framework import permissions, viewsets
-
 from project.pagination import CustomPagination
-
 from .models import Task
 from .serializers import TaskSerializer
 from .permissions import IsCollaboratorOrReadOnly

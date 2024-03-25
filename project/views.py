@@ -13,11 +13,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        serializer.save(created_by=self.request.user, collaborators=[self.request.user])
 
     def get_queryset(self):
         user = self.request.user
-        return Project.objects.filter(created_by=user) | Project.objects.filter(collaborators=user)
+        return (Project.objects.filter(collaborators=user) | Project.objects.filter(created_by=user)).distinct()
 
     def get_serializer_class(self):
         if self.action == 'list':

@@ -1,9 +1,10 @@
 from rest_framework.routers import DefaultRouter
-from .views import UserLoginViewSet, UserRegisterViewSet, UserLogoutViewSet
+from .views import UserLoginViewSet, UserProfileViewSet, UserRegisterViewSet, UserLogoutViewSet
 
 router = DefaultRouter()
-router.register(r'login', UserLoginViewSet, basename='user_login')
-router.register(r'register', UserRegisterViewSet, basename='user_register')
-router.register(r'logout', UserLogoutViewSet, basename='user_logout')
+router.register(r'signin', UserLoginViewSet, basename='user_signin')
+router.register(r'signup', UserRegisterViewSet, basename='user_signup')
+router.register(r'signout', UserLogoutViewSet, basename='user_signout')
+router.register(r'profile', UserProfileViewSet, basename='user_profile')
 
 urlpatterns = router.urls

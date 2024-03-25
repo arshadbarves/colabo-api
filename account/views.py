@@ -11,8 +11,9 @@ class UserLoginViewSet(viewsets.ViewSet):
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
             username = request.data['username']
+            password = request.data['password']
             user = User.objects.filter(username=username).first()
-            if user:
+            if user and user.check_password(password):
                 token, created = Token.objects.get_or_create(user=user)
                 response_data = {
                     'success': True,
@@ -22,9 +23,8 @@ class UserLoginViewSet(viewsets.ViewSet):
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
             else:
-                return Response({"detail": "User doesn't exist!"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"detail": "Invalid username or password!"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserRegisterViewSet(viewsets.ViewSet):
     def create(self, request, *args, **kwargs):
@@ -48,3 +48,18 @@ class UserLogoutViewSet(viewsets.ViewSet):
         token = Token.objects.get(user=request.user)
         token.delete()
         return Response({"success": True, "detail": "Logged out!"}, status=status.HTTP_200_OK)
+
+class UserProfileViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        user = Token.objects.get(key=token).user
+        response_data = {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
